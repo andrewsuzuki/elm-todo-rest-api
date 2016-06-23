@@ -4,7 +4,7 @@ import Html exposing (..)
 import Html.App
 
 import Models exposing (Model)
-import Messages exposing (Msg(TodosMsg))
+import Messages exposing (Msg (TodosMsg))
 import Todos.List
 
 
