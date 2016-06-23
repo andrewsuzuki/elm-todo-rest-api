@@ -10,7 +10,14 @@ You're probably here to learn Elm, so there's no reason to clutter things.
 
 ## Getting Started
 
-To play with it, first start up the api:
+First, install dependencies:
+
+```
+npm install
+elm package install
+```
+
+To play with the app, first start up the api:
 
 ```
 npm run api

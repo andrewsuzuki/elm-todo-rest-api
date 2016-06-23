@@ -75,6 +75,19 @@ fetchAll =
 
 
 --
+-- Creating
+--
+
+
+-- create todo
+create : String -> Cmd Msg
+create title =
+    todoEncoder title False
+        |> Utils.postJson todoDecoder resourceUrl
+        |> Task.perform CreateFail CreateDone
+
+
+--
 -- Patching (Updates)
 --
 

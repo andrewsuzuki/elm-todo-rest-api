@@ -21,7 +21,10 @@ update msg model =
         -- update function that we specify in Todos.Update
         TodosMsg subMsg ->
             let
-                (newTodos, cmd) =
-                    Todos.Update.update subMsg model.todos
+                (newTodoEditView, newTodos, cmd) =
+                    Todos.Update.update subMsg model.todoEditView model.todos
+
+                newModel =
+                    { model | todoEditView = newTodoEditView, todos = newTodos }
             in
-                ({ model | todos = newTodos }, Cmd.map TodosMsg cmd)
+                (newModel, Cmd.map TodosMsg cmd)

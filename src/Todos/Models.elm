@@ -9,3 +9,8 @@ type alias Todo =
     , title : String
     , completed : Bool
     }
+
+type TodoEditView =
+    None
+    | New String
+    | Editing Todo

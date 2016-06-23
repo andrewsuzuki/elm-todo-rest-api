@@ -2,8 +2,9 @@ module Todos.List exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (onClick)
-import Todos.Messages exposing (Msg (Revert, Complete, Patch, Delete))
-import Todos.Models exposing (Todo)
+
+import Todos.Messages exposing (Msg (ShowEditView, Revert, Complete, Patch, Delete))
+import Todos.Models exposing (Todo, TodoEditView (Editing))
 
 
 -- the main view here is a table with headers and body rows for each todo
@@ -25,6 +26,7 @@ view todos =
         -- right-to-left function application operator
         ]
 
+
 -- a single todo row
 todo : Todo -> Html Msg
 todo t =
@@ -43,10 +45,10 @@ todo t =
             , td [] [ text completedText ]
             , td []
                 [ button
-                    [ onClick <| buttonMsg <| t ]
+                    [ onClick <| buttonMsg t ]
                     [ text buttonText ]
                 , button
-                    [ onClick <| Patch <| t ] -- TODO
+                    [ onClick <| ShowEditView <| Editing t ]
                     [ text "Edit" ]
                 , button
                     [ onClick <| Delete <| t ]
