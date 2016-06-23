@@ -1,12 +1,12 @@
 module Models exposing (..)
 
 import Messages exposing (Msg)
+import Todos.Models exposing (Todo, dummyTodo)
 
 
 type alias Model =
-    { count : Int }
-
+    { todos : List Todo }
 
 init : (Model, Cmd Msg)
 init =
-    (Model 0, Cmd.none)
+    (Model [ dummyTodo ], Cmd.none)

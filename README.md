@@ -5,6 +5,9 @@ real-world elm apps will interact with a web api to persist state,
 this is a simple elm todo app demonstrating interaction
 with a simple json api server.
 
+This app purposely doesn't have any css styles.
+You're probably here to learn Elm, so there's no reason to clutter things.
+
 ## Getting Started
 
 To play with it, first start up the api:
