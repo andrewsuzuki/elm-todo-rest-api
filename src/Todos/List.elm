@@ -1,11 +1,21 @@
 module Todos.List exposing (..)
 
 import Html exposing (..)
+import Html.Attributes exposing (style)
 import Html.Events exposing (onClick)
 
 import Todos.Messages exposing (Msg (ShowEditView, Revert, Complete, Patch, Delete, DeleteCompleted))
 import Todos.Models exposing (Todo, TodoEditView (Editing))
 
+
+cellStyle : List (String, String)
+cellStyle =
+    [ ("textAlign", "left")
+    , ("padding", "10px")
+    ]
+
+cell el children =
+    el [ style cellStyle ] children
 
 -- the main view here is a table with headers and body rows for each todo
 view : List Todo -> Html Msg
@@ -13,10 +23,10 @@ view todos =
     div []
         [ table []
             [ thead []
-                [ th [] [ text "Id" ]
-                , th [] [ text "Title" ]
-                , th [] [ text "Completed?" ]
-                , th [] [ text "Actions" ]
+                [ cell th [ text "Id" ]
+                , cell th [ text "Title" ]
+                , cell th [ text "Completed?" ]
+                , cell th [ text "Actions" ]
                 ]
             -- below, we keep things modular by mapping a todo row view to every todo
             , tbody [] <| List.map todo <| todos
@@ -43,10 +53,10 @@ todo t =
                 ("No", "Done", Complete)
     in
         tr []
-            [ td [] [ text <| toString <| id ]
-            , td [] [ text title ]
-            , td [] [ text completedText ]
-            , td []
+            [ cell td [ text <| toString <| id ]
+            , cell td [ text title ]
+            , cell td [ text completedText ]
+            , cell td
                 [ button
                     [ onClick <| buttonMsg t ]
                     [ text buttonText ]
