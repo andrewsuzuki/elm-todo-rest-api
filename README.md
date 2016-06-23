@@ -5,6 +5,8 @@ real-world elm apps will interact with a web api to persist state,
 this is a simple elm todo app demonstrating interaction
 with a simple json api server.
 
+Additionally, the code here has about 10x the modularity of the official implementation.
+
 This app is sparse on css on purpose.
 
 The code is heavily-documented. If something is confusing,
