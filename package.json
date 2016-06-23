@@ -1,0 +1,46 @@
+{
+  "name": "elm-todomvc-with-api",
+  "version": "0.1.0",
+  "description": "elm todomvc with a stupid but persistent json api",
+  "main": "api.js",
+  "scripts": {
+    "api": "node api.js",
+    "build": "webpack",
+    "watch": "webpack --watch",
+    "dev": "webpack-dev-server --port 8000"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/andrewsuzuki/elm-todomvc-with-api.git"
+  },
+  "keywords": [
+    "elm",
+    "todomvc",
+    "todo",
+    "app",
+    "api",
+    "ajax",
+    "json",
+    "persistent",
+    "database",
+    "effects",
+    "tasks"
+  ],
+  "author": "Andrew Suzuki",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/andrewsuzuki/elm-todomvc-with-api/issues"
+  },
+  "homepage": "https://github.com/andrewsuzuki/elm-todomvc-with-api#readme",
+  "dependencies": {
+    "css-loader": "^0.23.1",
+    "elm-webpack-loader": "^3.0.3",
+    "file-loader": "^0.9.0",
+    "json-server": "^0.8.14",
+    "style-loader": "^0.13.1",
+    "url-loader": "^0.5.7",
+    "webpack": "^1.13.1",
+    "webpack-dev-middleware": "^1.6.1",
+    "webpack-dev-server": "^1.14.1"
+  }
+}
