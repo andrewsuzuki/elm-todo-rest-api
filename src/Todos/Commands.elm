@@ -10,6 +10,7 @@ import Todos.Models exposing (Todo)
 import Todos.Messages exposing (Msg (FetchAllFail, FetchAllDone, PatchFail, PatchDone))
 import Utils
 
+
 -- for a better introduction to commands, tasks, and Json.Decode, see here:
 -- http://www.elm-tutorial.org/en/06-fetching-resources/04-players-cmds.html
 
@@ -84,9 +85,7 @@ fetchAllUrl =
 patch : Todo -> Cmd Msg
 patch { id, title, completed } =
     todoEncoder title completed
-        |> Json.Encode.encode 0
-        |> Http.string
-        |> Utils.patch todoDecoder (patchUrl id)
+        |> Utils.patchJson todoDecoder (patchUrl id)
         |> Task.perform PatchFail PatchDone
 
 

@@ -1,6 +1,7 @@
 module Utils exposing (..)
 
 import Json.Decode
+import Json.Encode
 import Http
 import Task
 
@@ -24,14 +25,22 @@ mergeById existing new =
         List.map (merger new) existing
 
 
--- issue a PATCH request
-patch : Json.Decode.Decoder value -> String -> Http.Body -> Platform.Task Http.Error value
-patch decoder url body =
-    let request =
-        { verb = "PATCH"
-        , headers = [ ("Content-Type", "application/json") ]
-        , url = url
-        , body = body
-        }
+-- issue a PATCH request using a Json.Encode.Value
+patchJson : Json.Decode.Decoder value -> String -> Json.Encode.Value -> Platform.Task Http.Error value
+patchJson decoder url json =
+    let
+        body =
+            json
+                -- encode json value into a String using 0 indent
+                |> Json.Encode.encode 0
+                -- convert String into an Http body
+                |> Http.string
+
+        request =
+            { verb = "PATCH"
+            , headers = [ ("Content-Type", "application/json") ]
+            , url = url
+            , body = body
+            }
     in
         Http.fromJson decoder (Http.send Http.defaultSettings request)

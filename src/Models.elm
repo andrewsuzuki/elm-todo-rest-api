@@ -10,6 +10,9 @@ import Todos.Commands
 type alias Model =
     { todos : List Todo }
 
+
+-- this is the initial state for the application
+-- this is supplied to Html.App.Program in Main
 init : (Model, Cmd Msg)
 init =
     let
