@@ -1,7 +1,7 @@
 {
-  "name": "elm-todomvc-with-api",
+  "name": "elm-todo-rest-api",
   "version": "0.1.0",
-  "description": "elm todomvc with a stupid but persistent json api",
+  "description": "elm todomvc with a stupid but persistent json rest api",
   "main": "api.js",
   "scripts": {
     "api": "node api.js",
