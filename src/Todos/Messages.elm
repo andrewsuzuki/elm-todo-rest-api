@@ -8,10 +8,15 @@ import Todos.Models exposing (Todo)
 -- messages relevant to todos
 type Msg =
     NoOp
+
     | FetchAllDone (List Todo)
     | FetchAllFail Http.Error
     | PatchDone Todo
     | PatchFail Http.Error
+    | DeleteDone Todo
+    | DeleteFail Http.Error
+
     | Complete Todo
     | Revert Todo
     | Patch Todo
+    | Delete Todo

@@ -2,7 +2,7 @@ module Todos.List exposing (..)
 
 import Html exposing (..)
 import Html.Events exposing (onClick)
-import Todos.Messages exposing (Msg (Complete, Revert))
+import Todos.Messages exposing (Msg (Revert, Complete, Patch, Delete))
 import Todos.Models exposing (Todo)
 
 
@@ -33,9 +33,9 @@ todo t =
 
         (completedText, buttonText, buttonMsg) =
             if completed then
-                ("yes", "revert", Revert)
+                ("Yes", "Revert", Revert)
             else
-                ("no", "done", Complete)
+                ("No", "Done", Complete)
     in
         tr []
             [ td [] [ text <| toString <| id ]
@@ -44,5 +44,12 @@ todo t =
             , td []
                 [ button
                     [ onClick <| buttonMsg <| t ]
-                    [ text buttonText ] ]
+                    [ text buttonText ]
+                , button
+                    [ onClick <| Patch <| t ] -- TODO
+                    [ text "Edit" ]
+                , button
+                    [ onClick <| Delete <| t ]
+                    [ text "Delete" ]
+                ]
             ]

@@ -25,6 +25,12 @@ update msg todos =
         PatchFail error ->
             ( todos, Cmd.none )
 
+        DeleteDone todo ->
+            ( Utils.removeById todos todo, Cmd.none )
+
+        DeleteFail error ->
+            ( todos, Cmd.none )
+
         Complete todo ->
             let
                 newTodo = { todo | completed = True }
@@ -49,3 +55,7 @@ update msg todos =
         Patch todo ->
             -- see note above in Complete
             ( todos, Todos.Commands.patch todo )
+
+        Delete todo ->
+            -- see note above in Complete
+            ( todos, Todos.Commands.delete todo )

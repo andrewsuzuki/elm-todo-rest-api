@@ -7,7 +7,7 @@ import Json.Encode
 import String
 
 import Todos.Models exposing (Todo)
-import Todos.Messages exposing (Msg (FetchAllFail, FetchAllDone, PatchFail, PatchDone))
+import Todos.Messages exposing (Msg (..))
 import Utils
 
 
@@ -18,6 +18,11 @@ import Utils
 resourceUrl : String
 resourceUrl =
     "http://localhost:4000/todos"
+
+
+singleUrl : Int -> String
+singleUrl id =
+    String.join "/" [ resourceUrl, (toString id) ]
 
 
 --
@@ -65,15 +70,8 @@ todoEncoder title completed =
 -- fetch all todos
 fetchAll : Cmd Msg
 fetchAll =
-    Http.get todosDecoder fetchAllUrl
+    Http.get todosDecoder resourceUrl
         |> Task.perform FetchAllFail FetchAllDone
-
-
-
--- the static url we get the todos from
-fetchAllUrl : String
-fetchAllUrl =
-    resourceUrl
 
 
 --
@@ -85,13 +83,8 @@ fetchAllUrl =
 patch : Todo -> Cmd Msg
 patch { id, title, completed } =
     todoEncoder title completed
-        |> Utils.patchJson todoDecoder (patchUrl id)
+        |> Utils.patchJson todoDecoder (singleUrl id)
         |> Task.perform PatchFail PatchDone
-
-
-patchUrl : Int -> String
-patchUrl id =
-    String.join "/" [ resourceUrl, (toString id) ]
 
 
 --
@@ -99,4 +92,7 @@ patchUrl id =
 --
 
 
--- TODO
+delete : Todo -> Cmd Msg
+delete todo =
+    Utils.delete todo (singleUrl todo.id)
+        |> Task.perform DeleteFail DeleteDone

@@ -25,6 +25,16 @@ mergeById existing new =
         List.map (merger new) existing
 
 
+removeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
+removeById existing target =
+    let
+        filterer =
+            \a b ->
+                a.id /= b.id
+    in
+        List.filter (filterer target) existing
+
+
 -- issue a PATCH request using a Json.Encode.Value
 patchJson : Json.Decode.Decoder value -> String -> Json.Encode.Value -> Platform.Task Http.Error value
 patchJson decoder url json =
@@ -43,4 +53,25 @@ patchJson decoder url json =
             , body = body
             }
     in
-        Http.fromJson decoder (Http.send Http.defaultSettings request)
+        request
+            |> Http.send Http.defaultSettings
+            |> Http.fromJson decoder
+
+
+-- issue a DELETE request
+delete : a -> String -> Platform.Task Http.Error a
+delete a url =
+    let
+        decoder =
+            Json.Decode.succeed a
+
+        request =
+            { verb = "DELETE"
+            , headers = []
+            , url = url
+            , body = Http.empty
+            }
+    in
+        request
+            |> Http.send Http.defaultSettings
+            |> Http.fromJson decoder
