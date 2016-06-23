@@ -4,6 +4,7 @@ import Todos.Messages exposing (Msg (NoOp, FetchAllDone, FetchAllFail))
 import Todos.Models exposing (Todo)
 
 
+-- handle messages relevant to model.todos
 update : Msg -> List Todo -> (List Todo, Cmd Msg)
 update msg todos =
     case msg of
