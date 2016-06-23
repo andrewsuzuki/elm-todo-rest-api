@@ -1,9 +1,9 @@
 {
   "todos": [
     {
+      "completed": true,
       "id": 1,
-      "title": "Buy Milk",
-      "completed": false
+      "title": "buy milk"
     }
   ]
 }

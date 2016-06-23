@@ -1,7 +1,8 @@
 module Todos.List exposing (..)
 
 import Html exposing (..)
-import Todos.Messages exposing (Msg)
+import Html.Events exposing (onClick)
+import Todos.Messages exposing (Msg (Complete, Revert))
 import Todos.Models exposing (Todo)
 
 
@@ -13,6 +14,7 @@ view todos =
             [ th [] [ text "Id" ]
             , th [] [ text "Title" ]
             , th [] [ text "Completed?" ]
+            , th [] [ text "Actions" ]
             ]
         -- below, we keep things modular by mapping a todo row view to every todo
         , tbody [] <| List.map todo <| todos
@@ -25,9 +27,22 @@ view todos =
 
 -- a single todo row
 todo : Todo -> Html Msg
-todo { id, title, completed } =
-    tr []
-        [ td [] [ text (toString id) ]
-        , td [] [ text title ]
-        , td [] [ text (if completed then "yes" else "no") ]
-        ]
+todo t =
+    let
+        { id, title, completed } = t
+
+        (completedText, buttonText, buttonMsg) =
+            if completed then
+                ("yes", "revert", Revert)
+            else
+                ("no", "done", Complete)
+    in
+        tr []
+            [ td [] [ text <| toString <| id ]
+            , td [] [ text title ]
+            , td [] [ text completedText ]
+            , td []
+                [ button
+                    [ onClick <| buttonMsg <| t ]
+                    [ text buttonText ] ]
+            ]
