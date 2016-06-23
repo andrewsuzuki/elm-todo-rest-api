@@ -26,3 +26,4 @@ type Msg =
     | Revert Todo
     | Patch Todo
     | Delete Todo
+    | DeleteCompleted

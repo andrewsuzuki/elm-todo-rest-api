@@ -90,3 +90,10 @@ update msg ev todos =
         Delete todo ->
             -- see note above in Complete
             ( ev, todos, Todos.Commands.delete todo )
+
+        DeleteCompleted ->
+            let cmds =
+                todos
+                    |> List.filter (\todo -> todo.completed)
+                    |> List.map Todos.Commands.delete
+            in ( ev, todos, Cmd.batch cmds )
