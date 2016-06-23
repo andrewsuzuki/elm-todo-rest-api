@@ -1,7 +1,8 @@
 module Models exposing (..)
 
-import Messages exposing (Msg)
+import Messages exposing (Msg (TodosMsg))
 import Todos.Models exposing (Todo, dummyTodo)
+import Todos.Commands
 
 
 type alias Model =
@@ -9,4 +10,4 @@ type alias Model =
 
 init : (Model, Cmd Msg)
 init =
-    (Model [ dummyTodo ], Cmd.none)
+    (Model [], Cmd.map TodosMsg Todos.Commands.fetchAll)

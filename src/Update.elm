@@ -10,6 +10,7 @@ update msg model =
     case msg of
         NoOp ->
             (model, Cmd.none)
+
         TodosMsg subMsg ->
             let
                 (newTodos, cmd) =

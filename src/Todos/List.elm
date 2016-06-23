@@ -4,6 +4,7 @@ import Html exposing (..)
 import Todos.Messages exposing (Msg)
 import Todos.Models exposing (Todo)
 
+
 view : List Todo -> Html Msg
 view todos =
     table []
