@@ -1,6 +1,6 @@
 # elm-todo-rest-api
 
-![Todo Screenshot]("https://raw.githubusercontent.com/andrewsuzuki/elm-todo-rest-api/master/screenshot.png" "Todo Screenshot")
+![Todo Screenshot](resources/screenshot.png)
 
 The official [elm-todomvc](https://github.com/evancz/elm-todomvc) uses localStorage to persist state. Since most
 real-world elm apps will interact with a web api to persist state,
