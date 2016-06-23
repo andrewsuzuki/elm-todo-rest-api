@@ -8,30 +8,37 @@ import Task
 
 -- this is a record type, which is essentially a composable record
 -- see http://elm-lang.org/docs/records#record-types
--- this record type will match any record that has an integer id prop
+-- it says "i match any record as long as it has an integer id"
 type alias RecordWithId a =
     { a | id : Int }
 
 
 -- merge a new RecordWithId into an existing list of RecordWithIds,
 -- replacing the old RecordWithId(s) that have the same id,
--- or if there aren't any then appending it to the end
+-- or if there aren't any existing then append it to the end
 mergeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
 mergeById existing new =
     let
+        -- this is the reducing function
         merger =
-            \cand (found, els) ->
-                if new.id == cand.id then
+            \candidate (found, els) ->
+                if new.id == candidate.id then
+                    -- mark as found, disregard old (candidate) by conssing new
                     ( True, new :: els )
                 else
-                    ( found, cand :: els )
+                    -- doesn't match, so just include it as-is
+                    ( found, candidate :: els )
 
         (found, coalesced) =
+            -- foldl is the same as "reduce" in js, lisp, etc
             List.foldl merger (False, []) existing
 
         newListReversed =
+            -- if a replacement wasn't already made, then just cons the new one
             if found then coalesced else new :: coalesced
     in
+        -- since the cons operator (::) adds to the head of the list,
+        -- our original list is now in reverse. let's reverse it back to normal
         List.reverse newListReversed
 
 removeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
@@ -41,6 +48,8 @@ removeById existing target =
             \a b ->
                 a.id /= b.id
     in
+        -- since functions in elm curry, we can use partial application
+        -- to make a filterer that uses our target (filterer target)
         List.filter (filterer target) existing
 
 

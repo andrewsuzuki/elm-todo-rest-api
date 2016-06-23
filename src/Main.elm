@@ -8,6 +8,9 @@ import Update exposing (update)
 import Subscriptions exposing (subscriptions)
 
 
+-- this is the entry point into our application
+-- notice how there is no mention of "Todo" anywhere!
+-- everything having to do with Todos is modularized and encapsulated
 main : Program Never
 main =
     Html.App.program

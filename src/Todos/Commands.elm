@@ -71,7 +71,7 @@ todoEncoder title completed =
 fetchAll : Cmd Msg
 fetchAll =
     Http.get todosDecoder resourceUrl
-        |> Task.perform FetchAllFail FetchAllDone
+        |> Task.perform Fail FetchAllDone
 
 
 --
@@ -84,7 +84,7 @@ create : String -> Cmd Msg
 create title =
     todoEncoder title False
         |> Utils.postJson todoDecoder resourceUrl
-        |> Task.perform CreateFail CreateDone
+        |> Task.perform Fail CreateDone
 
 
 --
@@ -97,7 +97,7 @@ patch : Todo -> Cmd Msg
 patch { id, title, completed } =
     todoEncoder title completed
         |> Utils.patchJson todoDecoder (singleUrl id)
-        |> Task.perform PatchFail PatchDone
+        |> Task.perform Fail PatchDone
 
 
 --
@@ -108,4 +108,4 @@ patch { id, title, completed } =
 delete : Todo -> Cmd Msg
 delete todo =
     Utils.delete todo (singleUrl todo.id)
-        |> Task.perform DeleteFail DeleteDone
+        |> Task.perform Fail DeleteDone
