@@ -20,6 +20,7 @@ resourceUrl =
     "http://localhost:4000/todos"
 
 
+-- take a todo id and return its endpoint
 singleUrl : Int -> String
 singleUrl id =
     String.join "/" [ resourceUrl, (toString id) ]
@@ -30,9 +31,17 @@ singleUrl id =
 --
 
 
+-- yes, the json->elm conversion is a pain since a json string can be *anything*
+-- and elm is a strongly typed programming language.
+
+-- check out the json-to-elm project for writing quick json decoders
+-- https://github.com/eeue56/json-to-elm
+
+
 -- json decoder for todos list
 todosDecoder : Json.Decode.Decoder (List Todo)
 todosDecoder =
+    -- notice how decoders are composable
     Json.Decode.list todoDecoder
 
 
@@ -63,7 +72,7 @@ todoEncoder title completed =
 
 
 --
--- Fetching
+-- Fetch
 --
 
 
@@ -75,7 +84,7 @@ fetchAll =
 
 
 --
--- Creating
+-- Create
 --
 
 
@@ -88,7 +97,7 @@ create title =
 
 
 --
--- Patching (Updates)
+-- Patch (Update)
 --
 
 
@@ -101,7 +110,7 @@ patch { id, title, completed } =
 
 
 --
--- Deleting
+-- Delete
 --
 
 

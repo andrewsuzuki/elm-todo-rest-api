@@ -6,9 +6,13 @@ import Http
 import Task
 
 
--- this is a record type, which is essentially a composable record
--- see http://elm-lang.org/docs/records#record-types
--- it says "i match any record as long as it has an integer id"
+-- NOTE this file won't help you learn the elm architecture,
+-- but it will probably help you understand elm a bit more.
+
+
+-- this is a "record type", which is essentially a composable record
+-- see http://elm-lang.org/docs/records and scroll to the bottom
+-- it says "I match any record as long as it has an integer id field"
 type alias RecordWithId a =
     { a | id : Int }
 
@@ -19,22 +23,30 @@ type alias RecordWithId a =
 mergeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
 mergeById existing new =
     let
-        -- this is the reducing function
+        -- first, this is the reducing function.
+        -- it takes an arbitrary existing record and compares
+        -- it with the new record to be merged in, then decides
+        -- if it should be replaced with the new record.
+        -- it also tracks if that replacement has been made yet (found)
         merger =
+            -- this is an anonymous function
             \candidate (found, els) ->
                 if new.id == candidate.id then
                     -- mark as found, disregard old (candidate) by conssing new
+                    -- to "cons" means to add to the head of the list
                     ( True, new :: els )
                 else
                     -- doesn't match, so just include it as-is
                     ( found, candidate :: els )
 
+        -- destructure the result of the reduction
         (found, coalesced) =
             -- foldl is the same as "reduce" in js, lisp, etc
+            -- there is also List.foldr for reducing from the right
             List.foldl merger (False, []) existing
 
+        -- if a replacement wasn't already made, then just cons the new one
         newListReversed =
-            -- if a replacement wasn't already made, then just cons the new one
             if found then coalesced else new :: coalesced
     in
         -- since the cons operator (::) adds to the head of the list,
@@ -44,16 +56,23 @@ mergeById existing new =
 removeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
 removeById existing target =
     let
+        -- another anonymous function
         filterer =
             \a b ->
                 a.id /= b.id
     in
         -- since functions in elm curry, we can use partial application
-        -- to make a filterer that uses our target (filterer target)
+        -- to make a filterer that uses our target with (filterer target)
+        -- then you might think if the filtering function as affectively
+        -- filterer = \b -> target.id /= b.id
+        -- (a function with just one parameter now)
         List.filter (filterer target) existing
 
 
--- issue a POST request using a Json.Encode.Value
+-- Http supplies a util to post already, but it uses a plaintext
+-- content-type header, while we are sending json to our server.
+-- to make a reqest, we need a "decoder" to decode the return value,
+-- a url to make the request to, and a json value to send as the body
 postJson : Json.Decode.Decoder value -> String -> Json.Encode.Value -> Platform.Task Http.Error value
 postJson decoder url json =
     let
@@ -61,7 +80,7 @@ postJson decoder url json =
             json
                 -- encode json value into a String using 0 indent
                 |> Json.Encode.encode 0
-                -- convert String into an Http body
+                -- convert String into an Http.Body
                 |> Http.string
 
         request =
@@ -77,6 +96,7 @@ postJson decoder url json =
 
 
 -- issue a PATCH request using a Json.Encode.Value
+-- see explanation in postJson above
 patchJson : Json.Decode.Decoder value -> String -> Json.Encode.Value -> Platform.Task Http.Error value
 patchJson decoder url json =
     let
@@ -100,12 +120,13 @@ patchJson decoder url json =
 
 
 -- issue a DELETE request
+-- see explanation in postJson above
 delete : a -> String -> Platform.Task Http.Error a
 delete a url =
     let
         decoder =
-            -- since the api returns an empty object on success,
-            -- let's have the succes value be the value that was
+            -- since the api returns an empty object on delete success,
+            -- let's have the success value be the value that was
             -- passed in originally so it can be used elsewhere
             -- to remove itself
             Json.Decode.succeed a
@@ -114,6 +135,7 @@ delete a url =
             { verb = "DELETE"
             , headers = []
             , url = url
+            -- don't need a body for a delete request
             , body = Http.empty
             }
     in

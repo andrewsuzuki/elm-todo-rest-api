@@ -8,12 +8,22 @@ import Todos.Messages exposing (Msg (ShowEditView, ChangeTitle, CreateOrPatch))
 import Todos.Models exposing (Todo, TodoEditView (..))
 
 
+-- this module contains the todo edit view
+-- it explains itself for the most part, it is just html
+
+
 view : TodoEditView -> Html Msg
 view ev =
     div []
+        -- handle the different cases of the TodoEditView
         [ case ev of
             None ->
                 button
+                    -- on click, dispatch a message
+                    -- TodoEditView holds the value of the text box,
+                    -- so we can initialize it with an empty string
+                    -- notice how the <| operator is needed here
+                    -- to tell elm which arguments belong to what
                     [ onClick <| ShowEditView <| New "" ]
                     [ text "Create New Todo" ]
             New title ->
@@ -30,7 +40,7 @@ view ev =
 
 
 -- the "new" and "editing" forms are identical,
--- so they can be extracted into a separate widget (editingInputs)
+-- so they can be extracted into a separate component (editingInputs)
 editingInputs : String -> Html Msg
 editingInputs title =
     div []
@@ -44,6 +54,6 @@ editingInputs title =
             ]
             []
         , button
-            [ onClick <| CreateOrPatch ]
+            [ onClick CreateOrPatch ]
             [ text "Save" ]
         ]

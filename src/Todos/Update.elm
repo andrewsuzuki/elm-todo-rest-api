@@ -1,5 +1,6 @@
 module Todos.Update exposing (..)
 
+-- we want Msg along with all of its subtypes automatically (..)
 import Todos.Messages exposing (Msg (..))
 import Todos.Models exposing (TodoEditView (..), Todo)
 import Todos.Commands
@@ -10,6 +11,7 @@ import Utils
 update : Msg -> TodoEditView -> List Todo -> (TodoEditView, List Todo, Cmd Msg)
 update msg ev todos =
     case msg of
+        -- "no operation"
         NoOp ->
             ( ev, todos, Cmd.none )
 
@@ -21,7 +23,7 @@ update msg ev todos =
         -- if we're editing a new todo, then this updates the nested
         -- type variable representing the title
         -- if we're editing an existing todo, then this updated the
-        -- title property inside the nested type variable representing the todo
+        -- title "payload" inside the nested type variable representing the todo
         ChangeTitle title ->
             let nev =
                 case ev of
@@ -34,6 +36,8 @@ update msg ev todos =
             in ( nev, todos, Cmd.none )
 
         -- this is matched when there is an http error
+        -- it gives us an Http.Error, but we don't need it,
+        -- so we'll just use an underscore _ to denote that
         Fail _ ->
             -- disregard error; do nothing
             ( ev, todos, Cmd.none )
@@ -42,24 +46,22 @@ update msg ev todos =
         FetchAllDone newTodos ->
             ( ev, newTodos, Cmd.none )
 
-        -- create success
+        -- create success...merge in the new todo
         CreateDone newTodo ->
             ( ev, Utils.mergeById todos newTodo, Cmd.none )
 
-        -- patch success
+        -- patch success...merge in the new todo
         PatchDone newTodo ->
             ( ev, Utils.mergeById todos newTodo, Cmd.none )
 
-        -- delete success
+        -- delete success...remove the old todo
         DeleteDone todo ->
             ( ev, Utils.removeById todos todo, Cmd.none )
 
-        -- this is whenever the "save" button is clicked
+        -- this is dispatched whenever the "save" button is clicked
         CreateOrPatch ->
             let cmd =
                 case ev of
-                    -- not reachable currently, but
-                    -- we have to handle this case
                     None ->
                         Cmd.none
                     -- create a new todo
@@ -68,8 +70,8 @@ update msg ev todos =
                     -- patch an existing todo
                     Editing todo ->
                         Todos.Commands.patch todo
-            -- exit edit view and give our command
-            -- see note above in Complete
+            -- exit edit view (using None) and give elm our command
+            -- see note below in Complete
             in ( None, todos, cmd )
 
         -- this is matched when "Done is clicked"
@@ -83,6 +85,9 @@ update msg ev todos =
                 -- newTodos = Utils.mergeById todos newTodo
 
                 -- instead, we'll let PatchDone do the updating for us
+                -- if this were a mobile application we might want
+                -- to apply updates optimistically instead (since
+                -- internet is usually slower)
                 newTodos = todos
             in
                 ( ev, newTodos, Todos.Commands.patch newTodo )
@@ -116,7 +121,7 @@ update msg ev todos =
                 todos
                     -- filter completed todos
                     -- similar to clojure, we can use a "dot notation"
-                    -- to make a property-accessing function (.completed)
+                    -- to make a field-accessing function (.completed)
                     |> List.filter .completed
                     -- attach a delete command to each
                     |> List.map Todos.Commands.delete
