@@ -14,6 +14,22 @@ This app is sparse on css on purpose.
 The code is heavily-documented. If something is confusing,
 submit an issue or PR and I'll improve the documentation there if possible.
 
+## Beginners
+
+If you haven't installed elm yet, do so [here](http://elm-lang.org/install).
+
+I recommend following roughly this order for checking out the code:
+
+`Main → Models → Messages → Update → View`
+
+then in the `Todos` directory:
+
+`Todos.[Models → Messages → Update → Commands → View → Edit]`
+
+then if you're feeling confident:
+
+`Utils`
+
 ## Getting Started
 
 First, install dependencies:

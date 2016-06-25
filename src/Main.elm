@@ -12,8 +12,6 @@ import Subscriptions exposing (subscriptions)
 -- notice how there is no mention of "Todo" anywhere!
 -- everything having to do with Todos is modularized and encapsulated
 
--- if you are new to elm, i recommend checking out Messages.elm next
-
 main : Program Never
 main =
     Html.App.program

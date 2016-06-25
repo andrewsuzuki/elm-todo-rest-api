@@ -22,5 +22,3 @@ type Msg =
     -- Todos.Message.Msg, then that would collide with the NoOp
     -- in *this* Msg. Therefore, it needs to be wrapped.
     | TodosMsg Todos.Messages.Msg
-
--- check out Update.elm next for how these messages are handled!
