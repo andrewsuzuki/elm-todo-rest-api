@@ -2,25 +2,26 @@ module View exposing (..)
 
 import Html exposing (..)
 import Html.Attributes exposing (style, href, target)
-import Html.App
-
+import Html exposing(map)
 import Models exposing (Model)
-import Messages exposing (Msg (TodosMsg))
+import Messages exposing (Msg(TodosMsg))
 import Todos.Edit
 import Todos.List
 
 
 -- this is our "root" view. the entire appearance of our application
 -- is derived here from the app state (model)
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ siteHeader
-        -- render the todos edit and list sub-views using pars of the model,
-        -- then "tag" outgoing messages with TodosMsg
-        , Html.App.map TodosMsg <| Todos.Edit.view model.todoEditView
+          -- render the todos edit and list sub-views using pars of the model,
+          -- then "tag" outgoing messages with TodosMsg
+        , Html.map TodosMsg <| Todos.Edit.view model.todoEditView
         , br [] []
-        , Html.App.map TodosMsg <| Todos.List.view model.todos
+        , Html.map TodosMsg <| Todos.List.view model.todos
         ]
 
 
@@ -31,7 +32,8 @@ siteHeader =
         , p []
             [ text "Built with "
             , atb "http://elm-lang.org" "Elm"
-            , text " ♥" ]
+            , text " ♥"
+            ]
         , p []
             [ text "Created by Andrew Suzuki"
             , pipeDivider

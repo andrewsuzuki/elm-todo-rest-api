@@ -3,9 +3,8 @@ module Todos.Edit exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (placeholder, value)
 import Html.Events exposing (onClick, onInput)
-
-import Todos.Messages exposing (Msg (ShowEditView, ChangeTitle, CreateOrPatch))
-import Todos.Models exposing (Todo, TodoEditView (..))
+import Todos.Messages exposing (Msg(ShowEditView, ChangeTitle, CreateOrPatch))
+import Todos.Models exposing (Todo, TodoEditView(..))
 
 
 -- this module contains the todo edit view
@@ -26,11 +25,13 @@ view ev =
                     -- to tell elm which arguments belong to what
                     [ onClick <| ShowEditView <| New "" ]
                     [ text "Create New Todo" ]
+
             New title ->
                 div []
                     [ h2 [] [ text "New Todo" ]
                     , editingInputs title
                     ]
+
             Editing { title } ->
                 div []
                     [ h2 [] [ text <| "Editing Todo: " ++ title ]
@@ -39,8 +40,11 @@ view ev =
         ]
 
 
+
 -- the "new" and "editing" forms are identical,
 -- so they can be extracted into a separate component (editingInputs)
+
+
 editingInputs : String -> Html Msg
 editingInputs title =
     div []
