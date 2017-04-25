@@ -1,7 +1,7 @@
 module Update exposing (..)
 
 import Models exposing (Model)
-import Messages exposing (Msg (NoOp, TodosMsg))
+import Messages exposing (Msg(NoOp, TodosMsg))
 import Todos.Update
 
 
@@ -13,7 +13,9 @@ import Todos.Update
 -- as well as which commands we might want to dispatch.
 -- notice that we must return a tuple of the new model and the command together!
 -- this is because elm, like pretty much all languages, can only return one value
-update : Msg -> Model -> (Model, Cmd Msg)
+
+
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     -- since Msg is a union type, we need to handle
     -- every single case in a case..of statement
@@ -21,7 +23,7 @@ update msg model =
         -- "no operation", so return the model exactly how we received it
         -- Cmd.none means "i don't want to run any commands this time"
         NoOp ->
-            (model, Cmd.none)
+            ( model, Cmd.none )
 
         -- for anything having to do with Todos, use the todo-specific
         -- update function that we specify in Todos.Update
@@ -38,7 +40,7 @@ update msg model =
                 -- this is called "destructuring". since Todos.Update.update
                 -- always returns a tuple with three elements, we can give names
                 -- to those three elements easily
-                (newTodoEditView, newTodos, cmd) =
+                ( newTodoEditView, newTodos, cmd ) =
                     -- here we call Todos.Update.update with the subMsg
                     -- and any parts of the root model it might want to update
                     Todos.Update.update subMsg model.todoEditView model.todos
@@ -53,4 +55,4 @@ update msg model =
                 -- return our updated model as well as any commands
                 -- the sub-update gave us. We need to tag those commands first
                 -- with the TodosMsg (see Messages.elm for explanation)
-                (newModel, Cmd.map TodosMsg cmd)
+                ( newModel, Cmd.map TodosMsg cmd )

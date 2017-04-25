@@ -1,14 +1,17 @@
 module Todos.Update exposing (..)
 
 -- we want Msg along with all of its subtypes automatically (..)
-import Todos.Messages exposing (Msg (..))
-import Todos.Models exposing (TodoEditView (..), Todo)
+
+import Todos.Messages exposing (Msg(..))
+import Todos.Models exposing (TodoEditView(..), Todo)
 import Todos.Commands
 import Utils
 
 
 -- handle messages relevant to model.todos
-update : Msg -> TodoEditView -> List Todo -> (TodoEditView, List Todo, Cmd Msg)
+
+
+update : Msg -> TodoEditView -> List Todo -> ( TodoEditView, List Todo, Cmd Msg )
 update msg ev todos =
     case msg of
         -- "no operation"
@@ -25,15 +28,19 @@ update msg ev todos =
         -- if we're editing an existing todo, then this updated the
         -- title "payload" inside the nested type variable representing the todo
         ChangeTitle title ->
-            let nev =
-                case ev of
-                    None ->
-                        ev
-                    New _ ->
-                        New title
-                    Editing todo ->
-                        Editing { todo | title = title }
-            in ( nev, todos, Cmd.none )
+            let
+                nev =
+                    case ev of
+                        None ->
+                            ev
+
+                        New _ ->
+                            New title
+
+                        Editing todo ->
+                            Editing { todo | title = title }
+            in
+                ( nev, todos, Cmd.none )
 
         -- this is matched when there is an http error
         -- it gives us an Http.Error, but we don't need it,
@@ -43,52 +50,74 @@ update msg ev todos =
             ( ev, todos, Cmd.none )
 
         -- fetch all success
-        FetchAllDone newTodos ->
-            ( ev, newTodos, Cmd.none )
+        FetchAllDone res ->
+            case res of
+                Result.Ok newTodos ->
+                    ( ev, newTodos, Cmd.none )
+                Result.Err _ ->
+                    ( ev, todos, Cmd.none )
 
         -- create success...merge in the new todo
-        CreateDone newTodo ->
-            ( ev, Utils.mergeById todos newTodo, Cmd.none )
+        CreateDone res ->
+            case res of
+                Result.Ok todo ->
+                    ( ev, Utils.mergeById todos todo, Cmd.none )
+                Result.Err _ ->
+                    ( ev, todos, Cmd.none )
 
         -- patch success...merge in the new todo
-        PatchDone newTodo ->
-            ( ev, Utils.mergeById todos newTodo, Cmd.none )
+        PatchDone res ->
+            case res of
+                Result.Ok newTodo ->
+                    ( ev, Utils.mergeById todos newTodo, Cmd.none )
+                Result.Err _ ->
+                    ( ev, todos, Cmd.none ) 
 
         -- delete success...remove the old todo
-        DeleteDone todo ->
-            ( ev, Utils.removeById todos todo, Cmd.none )
+        DeleteDone res ->
+            case res of
+                Result.Ok todo ->
+                    ( ev, Utils.removeById todos todo, Cmd.none )
+                Result.Err _ ->
+                    ( ev, todos, Cmd.none )
 
         -- this is dispatched whenever the "save" button is clicked
         CreateOrPatch ->
-            let cmd =
-                case ev of
-                    None ->
-                        Cmd.none
-                    -- create a new todo
-                    New title ->
-                        Todos.Commands.create title
-                    -- patch an existing todo
-                    Editing todo ->
-                        Todos.Commands.patch todo
-            -- exit edit view (using None) and give elm our command
-            -- see note below in Complete
-            in ( None, todos, cmd )
+            let
+                cmd =
+                    case ev of
+                        None ->
+                            Cmd.none
+
+                        -- create a new todo
+                        New title ->
+                            Todos.Commands.create title
+
+                        -- patch an existing todo
+                        Editing todo ->
+                            Todos.Commands.patch todo
+
+                -- exit edit view (using None) and give elm our command
+                -- see note below in Complete
+            in
+                ( None, todos, cmd )
 
         -- this is matched when "Done is clicked"
         Complete todo ->
             let
                 -- make the new todo
-                newTodo = { todo | completed = True }
+                newTodo =
+                    { todo | completed = True }
 
                 -- if we want optimistic updates, we can make the changes ourselves
                 -- AND dispatch the patch command.
                 -- newTodos = Utils.mergeById todos newTodo
-
                 -- instead, we'll let PatchDone do the updating for us
                 -- if this were a mobile application we might want
                 -- to apply updates optimistically instead (since
                 -- internet is usually slower)
-                newTodos = todos
+                newTodos =
+                    todos
             in
                 ( ev, newTodos, Todos.Commands.patch newTodo )
 
@@ -96,7 +125,8 @@ update msg ev todos =
         Revert todo ->
             let
                 -- make the new todo
-                newTodo = { todo | completed = False }
+                newTodo =
+                    { todo | completed = False }
 
                 -- see note above in Complete
             in
@@ -117,12 +147,16 @@ update msg ev todos =
         -- but we'll just create separate delete commands for the
         -- todos that are completed
         DeleteCompleted ->
-            let cmds =
-                todos
-                    -- filter completed todos
-                    -- similar to clojure, we can use a "dot notation"
-                    -- to make a field-accessing function (.completed)
-                    |> List.filter .completed
-                    -- attach a delete command to each
-                    |> List.map Todos.Commands.delete
-            in ( ev, todos, Cmd.batch cmds )
+            let
+                cmds =
+                    todos
+                        -- filter completed todos
+                        -- similar to clojure, we can use a "dot notation"
+                        -- to make a field-accessing function (.completed)
+                        |>
+                            List.filter .completed
+                        -- attach a delete command to each
+                        |>
+                            List.map Todos.Commands.delete
+            in
+                ( ev, todos, Cmd.batch cmds )

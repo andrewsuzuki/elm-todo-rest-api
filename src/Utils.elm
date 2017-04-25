@@ -8,19 +8,22 @@ import Task
 
 -- NOTE this file won't help you learn the elm architecture,
 -- but it will probably help you understand elm a bit more.
-
-
 -- this is a "record type", which is essentially a composable record
 -- see http://elm-lang.org/docs/records and scroll to the bottom
 -- it says "I match any record as long as it has an integer id field"
+
+
 type alias RecordWithId a =
     { a | id : Int }
+
 
 
 -- merge a new RecordWithId into an existing list of RecordWithIds,
 -- replacing the old RecordWithId(s) that have the same id,
 -- or if there aren't any existing then append it to the end
-mergeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
+
+
+mergeById : List (RecordWithId a) -> RecordWithId a -> List (RecordWithId a)
 mergeById existing new =
     let
         -- first, this is the reducing function.
@@ -30,7 +33,7 @@ mergeById existing new =
         -- it also tracks if that replacement has been made yet (found)
         merger =
             -- this is an anonymous function
-            \candidate (found, els) ->
+            \candidate ( found, els ) ->
                 if new.id == candidate.id then
                     -- mark as found, disregard old (candidate) by conssing new
                     -- to "cons" means to add to the head of the list
@@ -40,20 +43,24 @@ mergeById existing new =
                     ( found, candidate :: els )
 
         -- destructure the result of the reduction
-        (found, coalesced) =
+        ( found, coalesced ) =
             -- foldl is the same as "reduce" in js, lisp, etc
             -- there is also List.foldr for reducing from the right
-            List.foldl merger (False, []) existing
+            List.foldl merger ( False, [] ) existing
 
         -- if a replacement wasn't already made, then just cons the new one
         newListReversed =
-            if found then coalesced else new :: coalesced
+            if found then
+                coalesced
+            else
+                new :: coalesced
     in
         -- since the cons operator (::) adds to the head of the list,
         -- our original list is now in reverse. let's reverse it back to normal
         List.reverse newListReversed
 
-removeById : List (RecordWithId a) -> (RecordWithId a) -> List (RecordWithId a)
+
+removeById : List (RecordWithId a) -> RecordWithId a -> List (RecordWithId a)
 removeById existing target =
     let
         -- another anonymous function
@@ -69,58 +76,48 @@ removeById existing target =
         List.filter (filterer target) existing
 
 
+
 -- Http supplies a util to post already, but it uses a plaintext
 -- content-type header, while we are sending json to our server.
 -- to make a reqest, we need a "decoder" to decode the return value,
 -- a url to make the request to, and a json value to send as the body
+
+
 postJson : Json.Decode.Decoder value -> String -> Json.Encode.Value -> Platform.Task Http.Error value
 postJson decoder url json =
     let
-        body =
-            json
-                -- encode json value into a String using 0 indent
-                |> Json.Encode.encode 0
-                -- convert String into an Http.Body
-                |> Http.string
-
-        request =
-            { verb = "POST"
-            , headers = [ ("Content-Type", "application/json") ]
-            , url = url
-            , body = body
-            }
+        body = Http.stringBody "application/json" (Json.Encode.encode 0 json)
     in
-        request
-            |> Http.send Http.defaultSettings
-            |> Http.fromJson decoder
+        Http.toTask (Http.post url body decoder)
 
 
 -- issue a PATCH request using a Json.Encode.Value
 -- see explanation in postJson above
+
+
 patchJson : Json.Decode.Decoder value -> String -> Json.Encode.Value -> Platform.Task Http.Error value
 patchJson decoder url json =
     let
-        body =
-            json
-                -- encode json value into a String using 0 indent
-                |> Json.Encode.encode 0
-                -- convert String into an Http body
-                |> Http.string
+        body = Http.stringBody "application/json" (Json.Encode.encode 0 json)
 
-        request =
-            { verb = "PATCH"
-            , headers = [ ("Content-Type", "application/json") ]
+        request = Http.request 
+            { method = "PATCH"
+            , headers = []
             , url = url
             , body = body
+            , expect = Http.expectJson decoder
+            , timeout = Maybe.Nothing
+            , withCredentials = False
             }
     in
-        request
-            |> Http.send Http.defaultSettings
-            |> Http.fromJson decoder
+        Http.toTask request
+
 
 
 -- issue a DELETE request
 -- see explanation in postJson above
+
+
 delete : a -> String -> Platform.Task Http.Error a
 delete a url =
     let
@@ -131,14 +128,16 @@ delete a url =
             -- to remove itself
             Json.Decode.succeed a
 
-        request =
-            { verb = "DELETE"
+        request = Http.request
+            { method = "DELETE"
             , headers = []
-            , url = url
-            -- don't need a body for a delete request
-            , body = Http.empty
+            , url =
+                url
+                -- don't need a body for a delete request
+            , body = Http.emptyBody
+            , expect = Http.expectJson decoder
+            , timeout = Maybe.Nothing
+            , withCredentials = False
             }
     in
-        request
-            |> Http.send Http.defaultSettings
-            |> Http.fromJson decoder
+        Http.toTask request
