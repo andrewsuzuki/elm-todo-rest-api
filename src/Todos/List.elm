@@ -61,8 +61,7 @@ todo : Todo -> Html Msg
 todo t =
     let
         -- destructure our todo
-        { id, title, completed } =
-            t
+        { id, title, completed } = t
 
         -- decide on some UI text/actions based on todo completed status
         ( completedText, buttonText, buttonMsg ) =

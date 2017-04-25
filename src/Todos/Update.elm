@@ -71,7 +71,7 @@ update msg ev todos =
                 Result.Ok newTodo ->
                     ( ev, Utils.mergeById todos newTodo, Cmd.none )
                 Result.Err _ ->
-                    ( ev, todos, Cmd.none ) 
+                    ( ev, todos, Cmd.none )
 
         -- delete success...remove the old todo
         DeleteDone res ->
@@ -153,10 +153,8 @@ update msg ev todos =
                         -- filter completed todos
                         -- similar to clojure, we can use a "dot notation"
                         -- to make a field-accessing function (.completed)
-                        |>
-                            List.filter .completed
+                        |> List.filter .completed
                         -- attach a delete command to each
-                        |>
-                            List.map Todos.Commands.delete
+                        |> List.map Todos.Commands.delete
             in
                 ( ev, todos, Cmd.batch cmds )

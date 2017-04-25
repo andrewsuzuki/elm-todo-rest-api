@@ -15,9 +15,7 @@ import Todos.Commands
 
 
 type alias Model =
-    { todos :
-        List Todo
-        -- the actual list of Todos
+    { todos : List Todo -- the actual list of Todos
     , todoEditView : TodoEditView
     }
 

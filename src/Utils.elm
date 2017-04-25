@@ -100,7 +100,7 @@ patchJson decoder url json =
     let
         body = Http.stringBody "application/json" (Json.Encode.encode 0 json)
 
-        request = Http.request 
+        request = Http.request
             { method = "PATCH"
             , headers = []
             , url = url
@@ -131,9 +131,7 @@ delete a url =
         request = Http.request
             { method = "DELETE"
             , headers = []
-            , url =
-                url
-                -- don't need a body for a delete request
+            , url = url
             , body = Http.emptyBody
             , expect = Http.expectJson decoder
             , timeout = Maybe.Nothing
