@@ -16,8 +16,6 @@ submit an issue or PR and I'll improve the documentation there if possible.
 
 ## Beginners
 
-If you haven't installed elm yet, do so [here](http://elm-lang.org/install).
-
 I recommend following roughly this order for checking out the code:
 
 `Main → Models → Messages → Update → View`
@@ -32,23 +30,38 @@ then if you're feeling confident:
 
 ## Getting Started
 
-First, install dependencies:
+If you haven't installed Elm 0.18 yet, do so [here](http://elm-lang.org/install).
+
+elm-todo-rest-api 0.2.0 is compatible with **Elm 0.18**. If you're still on Elm 0.17, download elm-todo-rest-api 0.1.0 [here](https://github.com/andrewsuzuki/elm-todo-rest-api/releases/tag/0.1.0).
+
+First, clone this repository:
 
 ```
-npm install
-elm package install
+$ git clone https://github.com/andrewsuzuki/elm-todo-rest-api.git
+$ cd elm-todo-rest-api
+```
+
+Then install dependencies:
+
+```
+$ npm install
+$ elm package install
 ```
 
 To play with the app, first start up the api:
 
 ```
-npm run api
+$ npm run api
 ```
 
 All changes will be reflected in `db.json`.
 
-Then, run the following to start a hot-reloading dev server through webpack:
+Then, in a new terminal window run the following to start a hot-reloading dev server through webpack:
 
 ```
-npm run dev
+$ npm run dev
 ```
+
+Visit [http://localhost:8000/](localhost:8000) in your browser and you should see the app!
+
+Make some changes and see what happens.
