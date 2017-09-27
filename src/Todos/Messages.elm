@@ -23,7 +23,7 @@ type Msg
     | ShowEditView TodoEditView
     | ChangeTitle String
     | CreateOrPatch
-      -- these are relevant to the Toos.List view
+      -- these are relevant to the Todos.List view
       -- also, these trigger http commands
     | Complete Todo
     | Revert Todo

@@ -64,16 +64,16 @@ removeById : List (RecordWithId a) -> RecordWithId a -> List (RecordWithId a)
 removeById existing target =
     let
         -- another anonymous function
-        filterer =
+        filterFn =
             \a b ->
                 a.id /= b.id
     in
         -- since functions in elm curry, we can use partial application
-        -- to make a filterer that uses our target with (filterer target)
-        -- then you might think if the filtering function as affectively
-        -- filterer = \b -> target.id /= b.id
+        -- to make a filterFn (filter function) that uses our target with (filterFn target)
+        -- then you might think if the filtering function as effectively
+        -- filterFn = \b -> target.id /= b.id
         -- (a function with just one parameter now)
-        List.filter (filterer target) existing
+        List.filter (filterFn target) existing
 
 
 
